@@ -1,0 +1,187 @@
+=========================================================================
+ ENTREGA FINAL - SALIDA DEL ANALISIS INFERENCIAL
+ Base: EVA Base Agricola (UPRA) - subconjunto de maiz
+ Generado el 2026-11-10 09:58:55
+ Nivel de significancia de todos los contrastes: alfa = 0.05
+=========================================================================
+
+1. BASE ANALIZADA (misma depuracion de la Entrega 1)
+---------------------------------------------------------------
+  Registros descargados (grupo Cereales)                 28663
+  Registros de maiz                                      21992
+  Con sistema de produccion identificable                21992
+  Con area sembrada, produccion y rendimiento > 0        19826
+  Completos en las variables analizadas (base final)     19826
+
+2. RESUMEN DESCRIPTIVO DE APOYO
+---------------------------------------------------------------
+      sistema     n    media mediana       de asimetria
+1 Tradicional 15935 1.850422     1.5 1.248857  4.339709
+2 Tecnificado  3891 4.367594     4.5 1.959547  1.915274
+  Municipios representados                               1043
+  Departamentos representados                            32
+  Anios                                                  2019 a 2025
+
+3. PREGUNTA 1 - RENDIMIENTO MEDIO POR SISTEMA
+---------------------------------------------------------------
+5.1 Prueba F de igualdad de varianzas (var.test)
+  Razon de varianzas s2_tec / s2_trad                    2,462
+  Grados de libertad                                     3890 y 15934
+  Region de no rechazo                                   [0,951; 1,050]
+  Valor p                                                < 2.2e-16
+  IC 95% para la razon de varianzas                      [2,344; 2,588]
+  Decision                                               se rechaza H0: varianzas distintas -> t de Welch
+
+5.2 Prueba t de Welch (t.test, var.equal = FALSE)
+  Media tecnificado (t/ha)                               4,368
+  Media tradicional (t/ha)                               1,850
+  Diferencia estimada (t/ha)                             2,517
+  Error estandar                                         0,0329
+  Estadistico t                                          76,428
+  Grados de libertad (Welch-Satterthwaite)               4688,6
+  Valor critico t(1 - alfa/2)                            1,960
+  Valor p                                                < 2.2e-16
+  IC 95% para la diferencia                              [2,453; 2,582]
+  Razon de medias tec / trad                             2,360
+
+5.3 Comparacion pareada (t.test, paired = TRUE)
+  Pares municipio-anio-periodo-color con ambos sistemas  2808
+  Municipios distintos que aportan pares                 211
+  Celdas clave-sistema con mas de un registro (promediadas) 0
+  Diferencia media D (t/ha)                              2,363
+  Desviacion estandar de D                               1,736
+  Estadistico t                                          72,142
+  Grados de libertad                                     2807
+  Valor critico t(1 - alfa/2)                            1,961
+  Valor p                                                < 2.2e-16
+  IC 95% para mu_D                                       [2,299; 2,428]
+  Pares en que el tecnificado rinde mas (%)              94,6
+  Asimetria de D                                         1,724
+
+5.4 Sensibilidad: un promedio por municipio y sistema (Welch)
+  Municipios con tecnificado / con tradicional           261 / 1007
+  Diferencia estimada (t/ha)                             2,327
+  Estadistico t                                          21,422
+  Grados de libertad                                     288,5
+  Valor p                                                < 2.2e-16
+  IC 95%                                                 [2,113; 2,541]
+
+5.5 Sensibilidad: sin el 0,1 % de rendimientos mas altos (> 15,00 t/ha)
+  Registros excluidos                                    17
+  Diferencia estimada (t/ha)                             2,496
+  Estadistico t y valor p                                81,739; < 2.2e-16
+  IC 95%                                                 [2,436; 2,556]
+
+4. PREGUNTA 2 - PROPORCION DE REGISTROS CON PERDIDA DE AREA
+---------------------------------------------------------------
+  Con perdida / total, tradicional                       6909 / 15935
+  Con perdida / total, tecnificado                       1345 / 3891
+  Proporcion tradicional                                 0,4336
+  Proporcion tecnificado                                 0,3457
+  Minimo de exitos o fracasos por grupo (>= 5)           1345
+  Proporcion combinada (bajo H0)                         0,4163
+  Estadistico Z (manual)                                 9,972
+  X-squared de prop.test (= Z^2)                         99,448
+  Valor critico z(1 - alfa/2)                            1,960
+  Valor p                                                < 2.2e-16
+  Diferencia p_trad - p_tec (p.p.)                       8,79
+  IC 95% para la diferencia (p.p.)                       [7,11; 10,47]
+  Razon de proporciones trad / tec                       1,254
+
+6.2 Sensibilidad: perdida calculada con el total anual
+  Registros con area cosechada mayor que la sembrada (%) 17,5
+  Totales anuales con perdida, tradicional               4119 / 8781 (46,9 %)
+  Totales anuales con perdida, tecnificado               820 / 2193 (37,4 %)
+  Estadistico Z y valor p                                8,013; 1.12e-15
+  IC 95% para la diferencia (p.p.)                       [7,24; 11,79]
+
+5. PREGUNTA 3 - REGRESION LINEAL SIMPLE
+---------------------------------------------------------------
+7.1 Modelo global: produccion ~ area_sembrada (todos los registros)
+                Estimate Std. Error    t value Pr(>|t|)
+(Intercept)   -93.991337  13.126106  -7.160641        0
+area_sembrada   3.604336   0.014399 250.317393        0
+  IC 95% intercepto                                      [-119,7196; -68,2631]
+  IC 95% pendiente                                       [3,5761; 3,6326]
+  Valor critico t(1 - alfa/2)                            1,960
+  R2                                                     0,7597
+  R2 ajustado                                            0,7596
+  Error estandar residual                                1810,2352
+  F global                                               62658,80 con 1 y 19824 gl; valor p < 2.2e-16
+  Valor critico F(1 - alfa)                              3,842
+  Covarianza entre area y produccion                     2873515,9
+  Correlacion de Pearson entre area y produccion         0,872
+
+7.2 Modelo dentro del sistema tradicional
+              Estimate Std. Error    t value Pr(>|t|)
+(Intercept)   9.150205   3.565374   2.566408 0.010285
+area_sembrada 1.831088   0.010645 172.010847 0.000000
+  IC 95% intercepto                                      [2,1617; 16,1387]
+  IC 95% pendiente                                       [1,8102; 1,8520]
+  Valor critico t(1 - alfa/2)                            1,960
+  R2                                                     0,6500
+  R2 ajustado                                            0,6500
+  Error estandar residual                                410,2770
+  F global                                               29587,73 con 1 y 15933 gl; valor p < 2.2e-16
+  Valor critico F(1 - alfa)                              3,842
+
+7.3 Modelo dentro del sistema tecnificado
+                Estimate Std. Error    t value Pr(>|t|)
+(Intercept)   428.054045  61.809857   6.925336        0
+area_sembrada   3.753158   0.031813 117.974769        0
+  IC 95% intercepto                                      [306,8712; 549,2369]
+  IC 95% pendiente                                       [3,6908; 3,8155]
+  Valor critico t(1 - alfa/2)                            1,961
+  R2                                                     0,7816
+  R2 ajustado                                            0,7815
+  Error estandar residual                                3783,8708
+  F global                                               13918,05 con 1 y 3889 gl; valor p < 2.2e-16
+  Valor critico F(1 - alfa)                              3,844
+
+7.4 Diagnostico de residuos
+  Modelo global
+    DE de residuos, tercio de ajustados bajos / altos    174,6 / 3119,8  (razon 17,9)
+    Shapiro-Wilk (H0: los errores son normales)          W = 0,1811; valor p < 2.2e-16; n = 5000
+  Modelo tradicional
+    DE de residuos, tercio de ajustados bajos / altos    29,3 / 704,6  (razon 24,1)
+    Shapiro-Wilk (H0: los errores son normales)          W = 0,4394; valor p < 2.2e-16; n = 5000
+  Modelo tecnificado
+    DE de residuos, tercio de ajustados bajos / altos    401,6 / 6381,5  (razon 15,9)
+    Shapiro-Wilk (H0: los errores son normales)          W = 0,2251; valor p < 2.2e-16; n = 3891
+
+7.5 Modelo global sin el 1 % de areas mas grandes (> 1992,2 ha)
+  Registros excluidos                                    199
+  Pendiente                                              2,8507
+  R2                                                     0,3936
+  Tecnificados dentro del 1 % de areas mas grandes (%)   56,8
+  Tecnificados en toda la base (%)                       19,6
+
+7.6 IC bootstrap percentil para la pendiente (2000 remuestreos)
+  Modelo global
+    Pendiente estimada                                   3,6043
+    IC 95% clasico                                       [3,5761; 3,6326]
+    IC 95% bootstrap percentil                           [2,8861; 4,9523]
+    Error estandar clasico / bootstrap                   0,0144 / 0,5397
+    Sesgo bootstrap                                      0,1219
+    Ancho del IC bootstrap / ancho del IC clasico        36,6
+  Modelo tradicional
+    Pendiente estimada                                   1,8311
+    IC 95% clasico                                       [1,8102; 1,8520]
+    IC 95% bootstrap percentil                           [1,7199; 1,9433]
+    Error estandar clasico / bootstrap                   0,0106 / 0,0565
+    Sesgo bootstrap                                      -0,0027
+    Ancho del IC bootstrap / ancho del IC clasico        5,4
+  Modelo tecnificado
+    Pendiente estimada                                   3,7532
+    IC 95% clasico                                       [3,6908; 3,8155]
+    IC 95% bootstrap percentil                           [2,9127; 5,4922]
+    Error estandar clasico / bootstrap                   0,0318 / 0,6873
+    Sesgo bootstrap                                      0,1774
+    Ancho del IC bootstrap / ancho del IC clasico        20,7
+
+=========================================================================
+ Fin del analisis inferencial.
+ Figuras en 'figuras'; cifras LaTeX en 'salidas'.
+ Se exportaron 229 cifras como macros de LaTeX.
+ Version de R: R version 4.6.1 (2026-06-24 ucrt)
+=========================================================================

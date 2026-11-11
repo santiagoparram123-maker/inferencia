@@ -1,0 +1,474 @@
+% =============================================================================
+%  PROYECTO INTEGRADOR DE INFERENCIA ESTADISTICA
+%  Entrega final: informe inferencial completo
+%
+%  Universidad Externado de Colombia
+%  Departamento de Matematicas - Pregrado en Ciencia de Datos - 2026-2
+%
+%  Compilacion:  pdflatex informe_final.tex   (dos veces)
+%
+%  Ninguna cifra esta escrita a mano: todas provienen de ../salidas/cifras.tex,
+%  que genera el script analisis_final.R. Si la base cambia, basta con volver
+%  a correr el script y recompilar.
+% =============================================================================
+
+\documentclass[12pt,letterpaper]{article}
+\input{preambulo}
+\input{../salidas/cifras}
+
+% Columna de parrafo alineada a la izquierda, para las tablas
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\begin{document}
+
+\input{portada}
+
+% =============================================================================
+%  CUERPO DEL INFORME  (extension exigida: 3 a 5 paginas)
+% =============================================================================
+
+\begin{center}
+\textbf{Rendimiento, pérdida de área y escala en el cultivo de maíz\\[2pt]
+en Colombia, 2019--2025: un análisis inferencial}
+\end{center}
+
+En la Entrega~1 se describieron los registros de maíz de las Evaluaciones
+Agropecuarias Municipales y se plantearon tres preguntas: si el rendimiento
+medio difiere entre el maíz tecnificado y el tradicional, si la proporción de
+registros con pérdida de área difiere entre ambos sistemas y cómo se relaciona
+el área sembrada con la producción. Este informe las responde con las
+herramientas inferenciales del curso: dos comparaciones de grupos,
+complementadas con una prueba pareada, y regresiones lineales simples con
+diagnóstico de residuos (Universidad Externado de Colombia, 2026).
+
+\section{Datos y marco inferencial}
+
+Se emplea la base de la Entrega~1, publicada por la Unidad de Planificación de
+Tierras Rurales, Adecuación de Tierras y Usos Agropecuarios [UPRA] (2025), con
+la misma depuración. De los \Nmaiz{} registros de maíz se conservan los
+\Nfinal{} que tienen área sembrada, producción y rendimiento positivos; cubren
+\Nmunicipios{} municipios de \Ndepartamentos{} departamentos entre \AnioMin{}
+y \AnioMax. Cada registro es la evaluación de una desagregación de maíz en un
+municipio durante un semestre: \NTrad{} corresponden al sistema tradicional y
+\NTec{} al tecnificado. La Tabla~1 resume las variables que intervienen en los
+contrastes.
+
+Como las evaluaciones cubren casi todos los municipios productores, la
+inferencia no se refiere a la lista finita de registros sino al proceso que
+los genera: el resultado de cada temporada depende del clima, las plagas y el
+manejo, y los registros de \AnioMin{} a \AnioMax{} se tratan como una muestra
+de ese proceso. La Tabla~2 formula el parámetro y las hipótesis de cada
+pregunta. Todos los contrastes son bilaterales, con un nivel de significancia
+$\alpha = \Alfa$, y cada estadístico obtenido con las funciones de R se
+verificó a mano con su distribución de referencia.
+
+\section{Comparación de grupos}
+
+\subsection{Rendimiento medio según el sistema de producción}
+
+La Figura~1 muestra la diferencia que motiva la primera pregunta: la mitad
+central de los registros tecnificados, entre \QITec{} y \QIIITec{} t/ha,
+queda por completo por encima de la mitad central de los tradicionales, entre
+\QITrad{} y \QIIITrad{} t/ha, y las medias son \MediaTec{} y \MediaTrad{} t/ha,
+respectivamente. Ambas
+distribuciones son asimétricas (coeficientes de \AsimTec{} y \AsimTrad), pero
+con \NTec{} y \NTrad{} registros el teorema del límite central respalda la
+normalidad aproximada de las medias muestrales, que es lo que exige la
+prueba~\textit{t}. La prueba~\textit{F} rechazó la igualdad de varianzas
+($F = \VTF$, $p$~\VTpRel): la varianza del sistema tecnificado es \VTF{} veces
+la del tradicional, por lo que se aplicó la corrección de Welch (Wackerly et
+al., 2010).
+
+La Tabla~3 reúne los resultados. El rendimiento medio del maíz tecnificado
+supera al del tradicional en \WDif{} t/ha ($t(\Wgl) = \Wt$, $p$~\WpRel;
+IC~95\,\%: [\WicInf; \WicSup]). Se rechaza $H_0$: con un 95\,\% de confianza,
+la brecha poblacional está entre \WicInf{} y \WicSup{} t/ha, de modo que el
+sistema tecnificado rinde en promedio \RazonMedias{} veces lo que rinde el
+tradicional. Es una diferencia de gran relevancia práctica, mayor que el
+propio rendimiento medio del sistema tradicional.
+
+Como el maíz tecnificado se siembra en otras zonas, la brecha podría reflejar
+el lugar y no el sistema. Para controlarlo se formaron \NPares{} pares en los
+que un mismo municipio reportó ambos sistemas en el mismo año, semestre y
+color de grano (\NMunPares{} municipios). Dentro de esos pares, la diferencia
+media fue de \PDif{} t/ha ($t(\Pgl) = \Pt$, $p$~\PpRel; IC~95\,\%: [\PicInf;
+\PicSup]) y el tecnificado rindió más en el \PPctTecMayor\,\% de los casos. La
+Figura~2 compara esta estimación con la de Welch y con una tercera que reduce
+cada municipio a un promedio por sistema, para que los municipios con muchos
+registros no pesen más: los tres intervalos excluyen el cero y ubican la
+brecha entre \BrechaMinIC{} y \BrechaMaxIC{} t/ha.
+
+\subsection{Pérdida de área según el sistema de producción}
+
+Un registro tiene pérdida de área cuando el área cosechada es menor que la
+sembrada. La reportan \XTrad{} de los \NTrad{} registros tradicionales
+(\PropTrad\,\%) y \XTec{} de los \NTec{} tecnificados (\PropTec\,\%); como cada
+grupo tiene al menos \CondNp{} éxitos y fracasos, la aproximación normal es
+adecuada. La prueba~\textit{Z} para dos proporciones rechaza la igualdad
+($Z = \Zp$, $p$~\ZpRel; IC~95\,\% para la diferencia: [\DifPropInf;
+\DifPropSup] puntos porcentuales). La Figura~3 lo hace visible: los intervalos
+de los dos sistemas no se tocan y la pérdida es \RazonProp{} veces más
+frecuente en el sistema tradicional.
+
+El indicador tiene una limitación de medición: en el \PctCosMayor\,\% de los
+registros el área cosechada supera a la sembrada, lo que indica que parte de
+lo sembrado en un semestre se cosecha en el siguiente. Para atenuar ese desfase, el
+contraste se repitió con el total anual de cada municipio y desagregación; la
+brecha se mantuvo (\PropAnualTrad\,\% frente a \PropAnualTec\,\%; IC~95\,\%:
+[\DifPropAnualInf; \DifPropAnualSup] puntos), de modo que la conclusión no
+depende del calendario de cosecha.
+
+\section{Relación entre el área sembrada y la producción}
+
+El modelo planteado en la Entrega~1 es
+\[
+\text{producción}_i = \beta_0 + \beta_1\,\text{área}_i + \varepsilon_i ,
+\]
+y se ajustó con todos los registros y, por separado, dentro de cada sistema
+(Tabla~4). La Figura~4 muestra una relación creciente (correlación de Pearson
+de \CorrArea), con la mayoría de los registros en áreas pequeñas y unos pocos
+registros muy grandes. Con todos los registros, cada hectárea sembrada
+adicional se asocia, en promedio, con \RGPenEst{} toneladas más de producción
+($t(\RGglDen) = \RGPenT$, $p$~\RGPenPRel; IC~95\,\%: [\RGPenLi; \RGPenLs]).
+La prueba~\textit{F} global ($F = \RGF$, $p$~\RGpFRel), que en la regresión
+simple es el cuadrado de~\textit{t}, lleva a la misma conclusión: se rechaza
+$H_0\colon \beta_1 = 0$. El área explica el \RGRdosPct\,\% de la variabilidad
+de la producción ($R^2 = \RGRdos$; $R^2$~ajustado $= \RGRdosAj$). El
+intercepto (\RGIntEst~t; $t = \RGIntT$, $p$~\RGIntPRel) no tiene lectura
+práctica: corresponde a un área de cero hectáreas y daría una producción
+negativa.
+
+El diagnóstico de residuos (Figura~5 y Tabla~5) muestra que los supuestos no
+se cumplen. En el gráfico de residuos frente a valores ajustados, la
+dispersión se abre a medida que crece el valor ajustado: la desviación
+estándar de los residuos en el tercio de valores ajustados más altos es
+\RGDERazon{} veces la del tercio más bajo, así que la varianza no es
+constante. Además, en la mayoría de los registros los residuos bajan cuando
+crece el valor ajustado, señal de que la recta la inclinan los registros más
+grandes: sin el 1\,\% de áreas mayores (más de \CorteArea{}~ha), la pendiente
+baja a \RGPenSinGrandes{} y el $R^2$ a \RGRdosSinGrandes. El gráfico
+cuantil-cuantil muestra colas mucho más pesadas que las de la normal, y la
+prueba de Shapiro-Wilk rechaza la normalidad de los errores ($W = \RGSWW$,
+$p$~\RGSWpRel; se aplicó a una muestra aleatoria de \RGSWn{} residuos, el
+máximo que admite la función). La independencia tampoco está garantizada: un
+mismo municipio aporta registros de varios semestres, que comparten suelo,
+clima y productores. Con estas violaciones, el error estándar y el intervalo
+clásicos de la pendiente no son confiables.
+
+Por eso el intervalo de la pendiente se recalculó con bootstrap percentil: se
+remuestrearon los registros \BBoot{} veces, se volvió a ajustar la recta en
+cada remuestreo y se tomaron los percentiles 2,5 y 97,5 de las pendientes
+obtenidas (Efron y Tibshirani, 1993). Este intervalo no exige normalidad ni
+varianza constante. El resultado, [\RGBootLi; \RGBootLs] t/ha, es unas
+\RGBootRazonAncho{} veces más ancho que el clásico, pero sigue sin incluir el
+cero: la relación positiva se mantiene, aunque su magnitud es bastante más
+incierta de lo que indica el intervalo clásico.
+
+La pendiente tiene una lectura directa: es la producción adicional por
+hectárea sembrada, es decir, un rendimiento. La Figura~6 compara las tres
+estimaciones. Dentro del sistema tradicional, la pendiente es de
+\RTradPenEst{} t/ha (IC bootstrap: [\RTradBootLi; \RTradBootLs]) y dentro del
+tecnificado, de \RTecPenEst{} t/ha ([\RTecBootLi; \RTecBootLs]); los
+intervalos no se cruzan, y los rendimientos medios de la primera pregunta
+(\MediaTrad{} y \MediaTec{} t/ha) caen dentro de ellos. La pendiente con todos
+los registros queda cerca de la del tecnificado, y por encima del rendimiento
+medio de la base (\MediaRendGlobal{} t/ha), porque los registros de mayor área,
+que son los que más pesan en la recta, son tecnificados en un
+\PctTecGrandes\,\%, frente al \PctTecTotal\,\% de toda la base. Los residuos de
+los dos modelos por sistema muestran el mismo patrón (Tabla~5), por lo que
+también para ellos se reporta el intervalo bootstrap.
+
+\section{Conclusiones}
+
+Primera pregunta: el rendimiento medio del maíz tecnificado supera al del
+tradicional en \WDif{} t/ha (IC~95\,\%: [\WicInf; \WicSup]), y la brecha
+persiste al comparar ambos sistemas dentro del mismo municipio y semestre.
+Segunda: la pérdida de área es más frecuente en el sistema tradicional, con
+\DifProp{} puntos porcentuales de diferencia (IC~95\,\%: [\DifPropInf;
+\DifPropSup]). Tercera: la producción aumenta con el área sembrada; cada
+hectárea adicional se asocia, en promedio, con \RGPenEst{} t más (IC bootstrap
+95\,\%: [\RGBootLi; \RGBootLs]), y el área explica el \RGRdosPct\,\% de la
+variabilidad de la producción. Como el modelo no cumple los supuestos de
+normalidad ni de varianza constante, la incertidumbre se midió con bootstrap,
+y la relación sigue siendo significativa. Esa pendiente es un rendimiento, y
+es mayor en el sistema tecnificado que en el tradicional (\RTecPenEst{} frente
+a \RTradPenEst{} t/ha), lo que concuerda con la primera pregunta.
+
+El alcance tiene cuatro límites. Los datos son observacionales: el sistema
+tecnificado suele ir acompañado de semilla mejorada, crédito y productores de
+mayor escala, y aunque la comparación pareada controla el lugar y la
+temporada, no controla esos factores; las brechas son asociaciones, no el efecto causal
+de tecnificar. Los registros de un mismo municipio no son independientes, lo
+que estrecha los intervalos; en las comparaciones de grupos, las
+verificaciones con un promedio por municipio y con totales anuales muestran
+que las conclusiones se sostienen, pero en la regresión ni el intervalo
+clásico ni el bootstrap, que remuestrea registros, corrigen esa dependencia. El
+indicador de pérdida mezcla pérdidas reales con el calendario de cosecha, y
+las cifras de la EVA provienen de evaluaciones de los técnicos municipales,
+no de mediciones directas en cada predio. Por último, con casi veinte mil registros incluso diferencias
+pequeñas resultan significativas; por eso se reportaron siempre la magnitud y
+su intervalo, y se distinguió la significancia estadística de la relevancia
+práctica (Greenland et al., 2016).
+
+\subsection{Nota sobre herramientas y reproducibilidad}
+
+El análisis se realizó en \VersionRCorta{} solo con funciones vistas en clase:
+\texttt{var.test}, \texttt{t.test}, \texttt{prop.test}, \texttt{lm},
+\texttt{confint}, \texttt{anova}, \texttt{shapiro.test}, y \texttt{boot} y
+\texttt{boot.ci} del paquete \texttt{boot} (R Core Team, 2026). El script
+\texttt{analisis\_final.R} reproduce las tablas, las figuras y cada cifra del
+texto. Se usó Claude (Anthropic, 2026) como apoyo en la depuración del código
+y en la edición del documento; el diseño del análisis, la verificación de los
+resultados y las conclusiones son responsabilidad de los autores.
+
+\newpage
+
+% =============================================================================
+%  REFERENCIAS
+% =============================================================================
+
+\input{referencias}
+
+\newpage
+
+% =============================================================================
+%  TABLAS Y FIGURAS (formato de manuscrito APA; no cuentan en la extension)
+% =============================================================================
+
+\section{Tablas}
+\vspace{6pt}
+
+\begin{bloque}
+\apatabla{1}{Variables que intervienen en los contrastes}
+
+\begin{apacuerpo}
+\noindent\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}L{3.1cm} L{6.0cm} L{2.6cm} L{3.9cm}@{}}
+\hline
+\textbf{Variable} & \textbf{Descripción} & \textbf{Tipo} & \textbf{Uso en el análisis} \\
+\hline
+\texttt{rendimiento} & Toneladas obtenidas por hectárea cosechada. & Numérica continua & Respuesta de la pregunta~1. \\
+\texttt{sistema} & Tradicional o tecnificado, según la desagregación del cultivo. & Categórica binaria & Define los grupos de las preguntas~1 y~2 y separa los modelos de la pregunta~3. \\
+\texttt{area\_sembrada} & Hectáreas sembradas en el semestre. & Numérica continua & Explicativa de la pregunta~3; define la pérdida. \\
+\texttt{area\_cosechada} & Hectáreas cosechadas en el semestre. & Numérica continua & Define la pérdida. \\
+\texttt{perdida} & Verdadero si el área cosechada es menor que la sembrada. & Categórica binaria & Respuesta de la pregunta~2. \\
+\texttt{produccion} & Toneladas obtenidas en el semestre. & Numérica continua & Respuesta de la pregunta~3. \\
+\texttt{municipio}, \texttt{anio}, \texttt{periodo}, \texttt{color} & Código DANE del municipio, año, semestre (A o B) y color del grano. & Categóricas & Forman los pares de la comparación pareada. \\
+\hline
+\end{tabular}
+\end{apacuerpo}
+
+\apanota{$N = \Nfinal$ registros de maíz. \texttt{sistema}, \texttt{perdida}
+y \texttt{color} son variables derivadas en el script; las demás provienen de
+UPRA (2025). El diccionario completo se presentó en la Entrega~1.}
+\end{bloque}
+
+\vspace{14pt}
+
+\begin{bloque}
+\apatabla{2}{Planteamiento formal de las hipótesis}
+
+\begin{apacuerpo}
+\noindent\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}L{2.5cm} L{4.3cm} L{4.5cm} L{4.3cm}@{}}
+\hline
+\textbf{Pregunta} & \textbf{Parámetro} & \textbf{Hipótesis} & \textbf{Contraste} \\
+\hline
+1. Rendimiento & $\mu_{\text{tec}} - \mu_{\text{trad}}$: diferencia de rendimientos medios (t/ha). & $H_0\colon \mu_{\text{tec}} - \mu_{\text{trad}} = 0$ \newline $H_1\colon \mu_{\text{tec}} - \mu_{\text{trad}} \neq 0$ & \textit{t} de Welch para muestras independientes. \\
+1. Supuesto previo & $\sigma^2_{\text{tec}} / \sigma^2_{\text{trad}}$: razón de varianzas. & $H_0\colon \sigma^2_{\text{tec}} / \sigma^2_{\text{trad}} = 1$ \newline $H_1\colon \sigma^2_{\text{tec}} / \sigma^2_{\text{trad}} \neq 1$ & \textit{F} para dos varianzas. \\
+1. Complemento & $\mu_D$: media de $D$ = rendimiento tecnificado menos tradicional en el mismo municipio, año, semestre y color. & $H_0\colon \mu_D = 0$ \newline $H_1\colon \mu_D \neq 0$ & \textit{t} pareada. \\
+2. Pérdida de área & $p_{\text{trad}} - p_{\text{tec}}$: diferencia de proporciones de registros con pérdida. & $H_0\colon p_{\text{trad}} - p_{\text{tec}} = 0$ \newline $H_1\colon p_{\text{trad}} - p_{\text{tec}} \neq 0$ & \textit{Z} para dos proporciones. \\
+3. Regresión & $\beta_1$: pendiente de la producción sobre el área sembrada (t por hectárea), con todos los registros y dentro de cada sistema. & $H_0\colon \beta_1 = 0$ \newline $H_1\colon \beta_1 \neq 0$ & \textit{t} sobre la pendiente y \textit{F} global; IC bootstrap percentil. \\
+3. Intercepto & $\beta_0$: producción esperada con un área de cero hectáreas. & $H_0\colon \beta_0 = 0$ \newline $H_1\colon \beta_0 \neq 0$ & \textit{t} sobre el intercepto. \\
+3. Supuesto previo & Distribución de los errores del modelo. & $H_0$: los errores se distribuyen normal \newline $H_1$: no se distribuyen normal & Shapiro-Wilk. \\
+\hline
+\end{tabular}
+\end{apacuerpo}
+
+\apanota{Todos los contrastes son bilaterales, con $\alpha = \Alfa$.}
+\end{bloque}
+
+\newpage
+
+\begin{bloque}
+\apatabla{3}{Resultados de las comparaciones de grupos}
+
+\begin{apacuerpo}
+\noindent\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}L{3.0cm} L{1.9cm} L{3.1cm} L{1.7cm} L{1.2cm} L{2.0cm} L{1.5cm}@{}}
+\hline
+\textbf{Contraste} & \textbf{Estimación} & \textbf{Estadístico (gl)} & \textbf{Valor crítico} & \textbf{Valor \textit{p}} & \textbf{IC 95\,\%} & \textbf{Decisión sobre $H_0$} \\
+\hline
+\textit{F} de igualdad de varianzas & Razón de \VTF & $F(\VTglUno;\ \VTglDos) = \VTF$ & \VTcritInf{} y \VTcritSup & \VTp & [\VTicInf; \VTicSup] & \DecVT \\
+\textit{t} de Welch & \WDif{} t/ha & $t(\Wgl) = \Wt$ & $\pm$\Wcrit & \Wp & [\WicInf; \WicSup] & \DecW \\
+\textit{t} pareada (mismo municipio, año, semestre y color) & \PDif{} t/ha & $t(\Pgl) = \Pt$ & $\pm$\Pcrit & \Pp & [\PicInf; \PicSup] & \DecP \\
+\textit{t} de Welch con un promedio por municipio & \MDif{} t/ha & $t(\Mgl) = \Mt$ & $\pm$\Mcrit & \Mp & [\MicInf; \MicSup] & \DecM \\
+\textit{Z} para dos proporciones & \DifProp{} p.\,p. & $Z = \Zp$ & $\pm$\Zcrit & \ZpVal & [\DifPropInf; \DifPropSup] p.\,p. & \DecZ \\
+\textit{Z} con totales anuales & \DifPropAnual{} p.\,p. & $Z = \ZAnual$ & $\pm$\Zcrit & \ZAnualP & [\DifPropAnualInf; \DifPropAnualSup] p.\,p. & \DecZA \\
+\hline
+\end{tabular}
+\end{apacuerpo}
+
+\apanota{p.\,p. $=$ puntos porcentuales; gl $=$ grados de libertad. Las
+diferencias de rendimiento son tecnificado menos tradicional
+($n = \NTec$ y $\NTrad$); las de proporciones, tradicional menos tecnificado.
+Los totales anuales suman los dos semestres de cada municipio, año y
+desagregación ($n = \NAnualTrad$ y $\NAnualTec$). Con un promedio por
+municipio, $n = \MNTec$ municipios con maíz tecnificado y $\MNTrad$ con
+tradicional. Las proporciones se compararon con \texttt{prop.test} sin
+corrección de continuidad; el estadístico $Z$ es la raíz del $\chi^2$ que
+reporta R.}
+\end{bloque}
+
+\vspace{14pt}
+
+\begin{bloque}
+\apatabla{4}{Regresión lineal simple de la producción sobre el área sembrada}
+
+\begin{apacuerpo}
+\noindent\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}L{4.3cm} L{3.75cm} L{3.75cm} L{3.75cm}@{}}
+\hline
+ & \textbf{Todos los registros} & \textbf{Tradicional} & \textbf{Tecnificado} \\
+\hline
+$n$ & \RGN & \RTradN & \RTecN \\
+Intercepto $b_0$ (error estándar) & \RGIntEst{} (\RGIntEE) & \RTradIntEst{} (\RTradIntEE) & \RTecIntEst{} (\RTecIntEE) \\
+\quad \textit{t}; valor \textit{p} & \RGIntT; \RGIntP & \RTradIntT; \RTradIntP & \RTecIntT; \RTecIntP \\
+\quad IC 95\,\% para $\beta_0$ & [\RGIntLi; \RGIntLs] & [\RTradIntLi; \RTradIntLs] & [\RTecIntLi; \RTecIntLs] \\
+Pendiente $b_1$ (error estándar) & \RGPenEst{} (\RGPenEE) & \RTradPenEst{} (\RTradPenEE) & \RTecPenEst{} (\RTecPenEE) \\
+\quad \textit{t}; valor \textit{p} & \RGPenT; \RGPenP & \RTradPenT; \RTradPenP & \RTecPenT; \RTecPenP \\
+\quad IC 95\,\% clásico para $\beta_1$ & [\RGPenLi; \RGPenLs] & [\RTradPenLi; \RTradPenLs] & [\RTecPenLi; \RTecPenLs] \\
+\quad IC 95\,\% bootstrap para $\beta_1$ & [\RGBootLi; \RGBootLs] & [\RTradBootLi; \RTradBootLs] & [\RTecBootLi; \RTecBootLs] \\
+$R^2$ / $R^2$ ajustado & \RGRdos{} / \RGRdosAj & \RTradRdos{} / \RTradRdosAj & \RTecRdos{} / \RTecRdosAj \\
+\textit{F} global (gl); valor \textit{p} & $F(1;\ \RGglDen) = \RGF$; \RGpF & $F(1;\ \RTradglDen) = \RTradF$; \RTradpF & $F(1;\ \RTecglDen) = \RTecF$; \RTecpF \\
+Error estándar residual & \RGSigma{} t & \RTradSigma{} t & \RTecSigma{} t \\
+\hline
+\end{tabular}
+\end{apacuerpo}
+
+\apanota{Variable respuesta: producción (t); variable explicativa: área
+sembrada (ha). La pendiente se lee en toneladas de producción por hectárea
+sembrada. El IC bootstrap es el percentil, con \BBoot{} remuestreos de
+registros (\texttt{boot.ci}, tipo \texttt{perc}). Valores críticos con todos
+los registros: $t_{0{,}975;\,\RGglDen} = \RGTcrit$ y
+$F_{0{,}95;\,1,\,\RGglDen} = \RGFcrit$.}
+\end{bloque}
+
+\newpage
+
+\begin{bloque}
+\apatabla{5}{Verificación de los supuestos de cada contraste}
+
+\begin{apacuerpo}
+\noindent\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}L{3.0cm} L{3.5cm} L{4.6cm} L{4.5cm}@{}}
+\hline
+\textbf{Supuesto} & \textbf{Evidencia} & \textbf{Resultado} & \textbf{Lectura} \\
+\hline
+P1: normalidad de las medias & Tamaño de los grupos y asimetría & $n = \NTec$ y $\NTrad$; asimetrías de \AsimTec{} y \AsimTrad & Se apela al teorema del límite central; la prueba \textit{t} es aplicable. \\
+P1: igualdad de varianzas & Prueba \textit{F} & $F = \VTF$; $p$~\VTpRel & No se cumple: se usa la corrección de Welch. \\
+P2: aproximación normal & Éxitos y fracasos por grupo & Mínimo de \CondNp{} (se exigen 5) & Se cumple. \\
+P1 y P2: independencia & Diseño: un municipio aporta varios registros & \Nfinal{} registros de \Nmunicipios{} municipios & Se cumple solo de forma aproximada; se verifica con un promedio por municipio y con totales anuales (Tabla~3). \\
+P3: linealidad & Diagrama de dispersión y residuos frente a ajustados (Figuras~4 y~5a) & Relación creciente, pero en la mayoría de los registros los residuos bajan al crecer el valor ajustado. Sin el 1\,\% de áreas mayores, $b_1 = \RGPenSinGrandes$ & No se cumple del todo: los registros más grandes inclinan la recta. \\
+P3: varianza constante & Residuos frente a ajustados (Figura~5a) & La dispersión se abre: la desviación estándar de los residuos del tercio de ajustados más altos es \RGDERazon{} veces la del más bajo (\RTradDERazon{} en el tradicional y \RTecDERazon{} en el tecnificado) & No se cumple: se usa el IC bootstrap, que no la exige. \\
+P3: normalidad de los errores & Gráfico cuantil-cuantil (Figura~5b) y prueba de Shapiro-Wilk & Todos los registros: $W = \RGSWW$, $p$~\RGSWpRel. Tradicional: $W = \RTradSWW$, $p$~\RTradSWpRel. Tecnificado: $W = \RTecSWW$, $p$~\RTecSWpRel & No se cumple: colas mucho más pesadas que las de la normal; se usa el IC bootstrap, que no la exige. \\
+P3: independencia & Diseño: un municipio aporta registros de varios semestres & \Nfinal{} registros de \Nmunicipios{} municipios & No está garantizada; ni el IC clásico ni el bootstrap la corrigen (limitación). \\
+\hline
+\end{tabular}
+\end{apacuerpo}
+
+\apanota{P1, P2 y P3 $=$ preguntas de investigación 1, 2 y 3. En la prueba de
+Shapiro-Wilk, $H_0$: los errores se distribuyen normal. Como
+\texttt{shapiro.test} admite como máximo 5.000 datos, en los modelos con todos
+los registros y del sistema tradicional se aplicó a una muestra aleatoria de
+\RGSWn{} residuos; en el tecnificado, a sus \RTecSWn{} residuos. La razón de
+desviaciones estándar es descriptiva, no una prueba.}
+\end{bloque}
+
+\newpage
+
+\section{Figuras}
+\vspace{6pt}
+
+\begin{bloque}
+\apafigura{1}{Rendimiento del maíz según el sistema de producción}
+
+\begin{center}\includegraphics[width=0.9\linewidth]{../figuras/fig1_box_sistema.pdf}\end{center}
+
+\apanota{$N = \Nfinal$ registros. El rombo blanco marca la media y la línea
+gruesa la mediana; los bigotes llegan hasta 1{,}5 veces el rango
+intercuartílico y se omiten los valores atípicos para no saturar el panel.
+Elaboración propia con R a partir de UPRA (2025).}
+\end{bloque}
+
+\vspace{14pt}
+
+\begin{bloque}
+\apafigura{2}{Tres estimaciones de la brecha de rendimiento, con su intervalo de confianza del 95\,\%}
+
+\begin{center}\includegraphics[width=\linewidth]{../figuras/fig2_ic_brecha.pdf}\end{center}
+
+\apanota{El punto es la diferencia estimada y la barra, el intervalo de
+confianza. La línea discontinua marca la ausencia de diferencia. Elaboración
+propia con R a partir de UPRA (2025).}
+\end{bloque}
+
+\newpage
+
+\begin{bloque}
+\apafigura{3}{Porcentaje de registros con pérdida de área según el sistema de producción, con su intervalo de confianza del 95\,\%}
+
+\begin{center}\includegraphics[width=0.8\linewidth]{../figuras/fig3_ic_perdida.pdf}\end{center}
+
+\apanota{Hay pérdida de área cuando el área cosechada es menor que la
+sembrada. Los porcentajes se calculan dentro de cada sistema. Elaboración
+propia con R a partir de UPRA (2025).}
+\end{bloque}
+
+\vspace{14pt}
+
+\begin{bloque}
+\apafigura{4}{Área sembrada y producción de cada registro, con las rectas de regresión ajustadas}
+
+\begin{center}\includegraphics[width=\linewidth]{../figuras/fig4_dispersion.pdf}\end{center}
+
+\apanota{Panel a: todos los registros. Panel b: sin el 1\,\% de registros con
+mayor área sembrada (más de \CorteArea{}~ha), para ver la nube principal; las
+rectas son las mismas del panel a y corresponden a la Tabla~4. Elaboración
+propia con R a partir de UPRA (2025).}
+\end{bloque}
+
+\newpage
+
+\begin{bloque}
+\apafigura{5}{Diagnóstico de residuos del modelo con todos los registros}
+
+\begin{center}\includegraphics[width=\linewidth]{../figuras/fig5_residuos.pdf}\end{center}
+
+\apanota{En el panel a se muestran los registros con valores ajustados por
+debajo del percentil 99 y residuos entre los percentiles 0{,}05 y 99{,}95,
+para que el eje sea legible; la línea discontinua marca el cero. En el
+panel~b, la línea discontinua es la referencia normal. Elaboración propia con
+R a partir de UPRA (2025).}
+\end{bloque}
+
+\vspace{14pt}
+
+\begin{bloque}
+\apafigura{6}{Pendiente de cada modelo de regresión, con sus intervalos de confianza del 95\,\% clásico y bootstrap}
+
+\begin{center}\includegraphics[width=0.95\linewidth]{../figuras/fig6_pendientes.pdf}\end{center}
+
+\apanota{El punto es la pendiente estimada, en toneladas de producción por
+hectárea sembrada; la línea delgada, el IC bootstrap percentil con \BBoot{}
+remuestreos; la barra gruesa, el IC clásico, tan estrecho que casi se reduce a
+un punto. El rombo es el rendimiento medio del grupo (pregunta~1). Elaboración
+propia con R a partir de UPRA (2025).}
+\end{bloque}
+
+\end{document}

@@ -1,0 +1,105 @@
+% =============================================================================
+%  Preambulo comun - Formato APA 7 (estudiante)
+%  Times New Roman 12 pt, texto negro, margenes de 1 pulgada, interlineado
+%  doble, sangria de primera linea de media pulgada y numeracion superior
+%  derecha, conforme a APA (2020, secciones 2.19 a 2.24).
+% =============================================================================
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot,es-tabla]{babel}
+\usepackage{mathptmx}          % Times New Roman (texto y matematicas)
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
+
+% --- Color del texto: negro en todo el documento ---------------------------
+\color{black}
+\definecolor{negro}{gray}{0}
+
+% --- Alineacion --------------------------------------------------------------
+% El documento sale JUSTIFICADO, que es la convencion habitual en los trabajos
+% academicos en espanol. APA 7 (seccion 2.24) prescribe, en rigor, alineacion a
+% la izquierda con margen derecho irregular: para adoptarla basta con quitar el
+% comentario de las dos lineas siguientes.
+% \usepackage[document]{ragged2e}
+% \setlength{\RaggedRightParindent}{0.5in}
+
+% --- Interlineado y sangria --------------------------------------------------
+% Interlineado doble y sangria de primera linea de media pulgada en todo el
+% cuerpo, salvo en las tablas, las figuras y sus notas.
+\doublespacing
+\setlength{\parindent}{0.5in}
+\setlength{\parskip}{0pt}
+% Holgura extra para que el texto justificado no se salga del margen
+\setlength{\emergencystretch}{1.5em}
+% Particion correcta de palabras inglesas de las referencias
+\hyphenation{mis-in-ter-pre-ta-tions ho-mo-sce-das-tic-i-ty}
+
+% --- Numeracion de pagina: superior derecha ---------------------------------
+\setlength{\headheight}{14.5pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\normalfont\normalsize\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% --- Niveles de titulo APA 7 -------------------------------------------------
+% Nivel 1: centrado, negrita.  Nivel 2: izquierda, negrita.
+% Nivel 3: izquierda, negrita cursiva.
+\titleformat{\section}{\normalsize\bfseries\centering}{}{0pt}{}
+\titleformat{\subsection}{\normalsize\bfseries\raggedright}{}{0pt}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\itshape\raggedright}{}{0pt}{}
+\titlespacing*{\section}{0pt}{0pt}{0pt}
+\titlespacing*{\subsection}{0pt}{0pt}{0pt}
+\titlespacing*{\subsubsection}{0pt}{0pt}{0pt}
+\setcounter{secnumdepth}{0}
+
+% --- Encabezados de tabla y figura al estilo APA -----------------------------
+% Numero en negrita, en linea propia; titulo en cursiva, en la linea siguiente.
+\newcommand{\apatabla}[2]{%
+  \noindent{\normalsize\textbf{Tabla #1}}\par
+  \noindent{\normalsize\textit{#2}}\par
+  \vspace{4pt}}
+
+\newcommand{\apafigura}[2]{%
+  \noindent{\normalsize\textbf{Figura #1}}\par
+  \noindent{\normalsize\textit{#2}}\par
+  \vspace{4pt}}
+
+% Nota de tabla o figura, a espacio sencillo. Se usa un grupo con
+% \setstretch{1} y no el entorno spacing de setspace: ese entorno, al cerrarse
+% dentro de un documento a doble espacio, inserta un salto negativo que monta
+% el texto siguiente sobre la tabla.
+\newcommand{\apanota}[1]{%
+  \par\vspace{4pt}%
+  \begingroup\setstretch{1}\footnotesize
+  \noindent\textit{Nota.} #1\par
+  \endgroup}
+
+% --- Entorno de referencias con sangria francesa -----------------------------
+\newenvironment{referencias}
+  {\begin{list}{}{%
+     \setlength{\leftmargin}{0.5in}
+     \setlength{\itemindent}{-0.5in}
+     \setlength{\listparindent}{0pt}
+     \setlength{\labelwidth}{0pt}
+     \setlength{\labelsep}{0pt}
+     \setlength{\itemsep}{0pt}
+     \setlength{\parsep}{0pt}
+     \setlength{\topsep}{0pt}}}
+  {\end{list}}
+
+% --- Espaciado sencillo dentro de tablas y figuras ---------------------------
+\newenvironment{apacuerpo}{\par\begingroup\setstretch{1}}{\par\endgroup}
+
+% --- Bloque indivisible: encabezado, tabla o figura y nota en la misma pagina
+\newenvironment{bloque}{\par\noindent\begin{minipage}{\linewidth}}%
+  {\end{minipage}\par}

@@ -1,0 +1,21 @@
+# La app de estudio del Parcial 2 tiene su propio repositorio (prueba),
+# así que no se versiona aquí.
+prueba/
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+
+# LaTeX: se regeneran al compilar
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+desktop.ini
+~$*

@@ -1,0 +1,11 @@
+eva_cereales.csv
+
+Fuente: Unidad de Planificacion de Tierras Rurales, Adecuacion de Tierras y
+Usos Agropecuarios (UPRA). Evaluaciones Agropecuarias Municipales - EVA.
+2019-2025. Base agricola. Datos Abiertos Colombia, id uejq-wxrr.
+Licencia CC BY-SA 4.0.
+
+Descargado el 6 de noviembre de 2026 con la consulta:
+https://www.datos.gov.co/resource/uejq-wxrr.csv?$where=grupo_cultivo='Cereales'&$limit=100000
+
+28.663 registros del grupo Cereales (21.992 de maiz).
